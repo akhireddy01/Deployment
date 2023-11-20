@@ -1,0 +1,64 @@
+winlogbeat.event_logs:
+  - name: Application
+    ignore_older: 15m
+    fields:
+      log: "windows-log"
+      clientid: "d3b6842d"
+      sensorid: "DM_HY_S01"
+  - name: Security
+    ignore_older: 15m
+    fields:
+      log: "windows-log"
+      clientid: "d3b6842d"
+      sensorid: "DM_HY_S01"
+  - name: System
+    ignore_older: 15m
+    fields:
+      log: "windows-log"
+      clientid: "d3b6842d"
+      sensorid: "DM_HY_S01"
+  - name: Microsoft-windows-Sysmon/Operational
+    ignore_older: 15m
+    fields:
+      log: "windows-log"
+      clientid: "d3b6842d"
+      sensorid: "DM_HY_S01"
+  - name: Microsoft-windows-PowerShell/Operational
+    ignore_older: 15m
+    fields:
+      log: "windows-log"
+      clientid: "d3b6842d"
+      sensorid: "DM_HY_S01"
+  - name: Windows PowerShell
+    ignore_older: 15m
+    fields:
+      log: "windows-log"
+      clientid: "d3b6842d"
+      sensorid: "DM_HY_S01"
+  - name: Microsoft-Windows-WMI-Activity/Operational
+    ignore_older: 15m
+    fields:
+      log: "windows-log"
+      clientid: "d3b6842d"
+      sensorid: "DM_HY_S01"
+  - name: Microsoft-windows-TaskScheduler/Operational
+    ignore_older: 15m
+    fields:
+      log: "windows-log"
+      clientid: "d3b6842d"
+      sensorid: "DM_HY_S01"
+
+  - name: Microsoft-Windows-Windows Defender/Operational
+    ignore_older: 15m
+    fields:
+      log: "windows-log"
+      clientid: "d3b6842d"
+      sensorid: "DM_HY_S01"
+
+output.file:
+  path: "C:\Users\Mula Akhila Reddy\Desktop\winlogbeat"
+  filename: winlogbeat.txt
+
+
+
+  winlogbeat.registry_file: C:/Program Files/winlogbeat/.winlogbeat.yml
