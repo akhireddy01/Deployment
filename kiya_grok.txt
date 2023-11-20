@@ -1,0 +1,107 @@
+raw_message:
+=============
+
+2023-11-01T19:29:12.291+0530#011INFO#011instance/beat.go:686#011Home path: [/usr/share/auditbeat] Config path: [/etc/auditbeat] Data path: [/var/lib/auditbeat] Logs path: [/var/log/auditbeat] Hostfs Path: [/]
+
+
+grok:
+=====
+
+%{TIMESTAMP_ISO8601:event_timestamp}%{DATA} %{DATA} %{DATA:home_path} %{DATA}: %{NOTSPACE:config_path} %{DATA}: %{DATA:data_path} %{DATA}: %{DATA:logs_path} %{DATA}: %{NOTSPACE:hostfs_path}
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+raw_message:
+============
+
+2023-11-01T19:29:12.053+0530#011ERROR#011instance/beat.go:1015#011Exiting: 1 error: failed to create audit client: no connection to audit available
+
+
+
+grok:
+=====
+
+%{TIMESTAMP_ISO8601:event_timestamp}%{DATA} %{DATA} %{DATA} %{GREEDYDATA:error}
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+raw_message:
+============
+
+2023-11-01T19:29:12.053+0530#011ERROR#011[auditd]#011auditd/audit_linux.go:1046#011Cannot continue: audit configuration is locked in the kernel (enabled=2) which prevents using unicast sockets. Multicast audit subscriptions are not available in this kernel. Disable locking the audit configuration to use auditbeat.
+
+
+grok:
+======
+
+%{TIMESTAMP_ISO8601:event_timestamp}%{DATA} %{DATA} %{DATA}%{GREEDYDATA:error}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+raw_message:
+============
+
+2023-11-01T19:29:12.053+0530#011INFO#011instance/beat.go:461#011auditbeat stopped.
+
+
+
+grok:
+=====
+%{TIMESTAMP_ISO8601:timestamp}#011%{LOGLEVEL:loglevel}#011%{GREEDYDATA:source}#011%{GREEDYDATA:message}
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+raw_message:
+============
+2023-11-01T19:34:22.501+0530#011INFO#011[monitoring]#011log/log.go:184#011Non-zero metrics in the last 30s#011{"monitoring": {"metrics": {"beat":{"cpu":{"system":{"ticks":33621980,"time":{"ms":244}},"total":{"ticks":62653750,"time":{"ms":477},"value":62653750},"user":{"ticks":29031770,"time":{"ms":233}}},"handles":{"limit":{"hard":4096,"soft":1024},"open":17},"info":{"ephemeral_id":"69f4b0f2-af00-4f0c-9683-4026709c8ab8","uptime":{"ms":4039174431},"version":"7.16.2"},"memstats":{"gc_next":16191408,"memory_alloc":10472256,"memory_total":2303522349104,"rss":86704128},"runtime":{"goroutines":51}},"libbeat":{"config":{"module":{"running":0}},"output":{"events":{"acked":32,"active":0,"batches":3,"total":32},"read":{"bytes":18},"write":{"bytes":7169}},"pipeline":{"clients":2,"events":{"active":0,"published":32,"total":32},"queue":{"acked":32}}},"metricbeat":{"system":{"process":{"events":32,"success":32}}},"system":{"load":{"1":0.84,"15":0.56,"5":0.64,"norm":{"1":0.035,"15":0.0233,"5":0.0267}}}}}}
+
+
+
+
+grok:
+=====
+%{TIMESTAMP_ISO8601:timestamp}#011%{DATA:log_level}#011\[%{DATA:source}\]#011%{DATA:file}:%{NUMBER:line}#011%{DATA}#011%{GREEDYDATA:monitoring_data}
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+raw_message:
+============
+2023-11-01T19:34:21.896+0530#011WARN#011[add_cloud_metadata]#011add_cloud_metadata/provider_aws_ec2.go:79#011read token request for getting IMDSv2 token returns empty: Put "http://169.254.169.254/latest/api/token": context deadline exceeded (Client.Timeout exceeded while awaiting headers). No token in the metadata request will be used.
+
+grok:
+=====
+%{TIMESTAMP_ISO8601:timestamp}#011%{LOGLEVEL:log_level}#011%{DATA:source}#011%{DATA}#011%{GREEDYDATA:message}
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+raw_message:
+============
+2023-11-01T19:29:12.052+0530#011INFO#011[auditd]#011auditd/audit_linux.go:107#011auditd module is running as euid=0 on kernel=3.10.0-1160.95.1.el7.x86_64
+
+
+grok:
+=====
+%{TIMESTAMP_ISO8601:timestamp}#011%{LOGLEVEL:log_level}#011%{DATA:source}#011%{DATA}#011%{GREEDYDATA:message}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
