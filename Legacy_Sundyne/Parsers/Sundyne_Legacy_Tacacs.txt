@@ -1,0 +1,63 @@
+Nov' 22--2023
+@06:43pm
+
+sundyne
+
+
+Legacy-tacacs-parser 
+
+ 
+
+filter { 
+
+# if [fields][log_type] == "tacacs"  { 
+
+     grok { 
+
+         match => { 
+
+              "message" => [ 
+
+                  "<%{POSINT:priority}>%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:hostname} %{DATA:logsource} %{NUMBER:logtype} %{POSINT:logsubcode} %{NUMBER:VAL} %{TIMESTAMP_ISO8601:eventtimestamp} %{DATA:timezone} %{DATA:eventid} %{POSINT:processid} %{WORD:severity} %{DATA:operation}, %{GREEDYDATA:kvfields}" 
+
+       ] 
+
+      } 
+
+  
+
+    } 
+
+  
+
+   kv { 
+
+      source => "kvfields" 
+
+      field_split => "," 
+
+      value_split => "=" 
+
+  
+
+   } 
+
+  
+
+#  date { 
+
+#    match => ["timestamp", "MMM dd HH:mm:ss", "MMM  d HH:mm:ss"] 
+
+#    timezone => "%{timezone}" 
+
+#    target => "event_timestamp" 
+
+#  } 
+
+  
+
+#  } 
+
+  
+
+} 

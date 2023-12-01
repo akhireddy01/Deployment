@@ -1,0 +1,24 @@
+#   asa raw logs
+
+
+<167>Nov 07 2022 23:47:23: %25ASA-7-713906: Ignoring msg to mark SA with dsID 1342107648 dead because SA deleted%0A
+
+<167>Nov 07 2022 23:47:23: %25ASA-7-713906: Group = 129.146.12.53, IP = 129.146.12.53, Add to IKEv1 Tunnel Table succeeded for SA with logical ID 1342107648%0A
+
+<167>Nov 07 2022 23:47:23: %25ASA-7-716002: Group <GroupPolicy_RemoteAccess_AlwaysOn> User <theodore.smith> IP <70.44.212.162> WebVPN session terminated: Max time exceeded.%0A
+
+<164>Nov 07 2022 23:47:23: %25ASA-4-113019: Group = Arvada_SSLVPN_RemoteAccess, Username = theodore.smith, IP = 70.44.212.162, Session disconnected. Session Type: SSL, Duration: 12h:00m:20s, Bytes xmt: 31888184, Bytes rcv: 33708376, Reason: Max time exceeded%0A
+
+<167>Nov 07 2022 23:46:11: %25ASA-7-725011: Cipher[12] : AES128-GCM-SHA256%0A
+	
+<166>Nov 07 2022 23:46:10: %25ASA-6-725001: Starting SSL handshake with client outside:126.217.83.75/53616 to 159.63.163.1/443 for TLS session%0A
+
+<167>Nov 07 2022 23:46:10: %25ASA-7-725011: Cipher[21] : AES256-SHA%0A
+
+<166>Nov 07 2022 23:46:10: %25ASA-6-725007: SSL session with client outside:126.217.83.75/53616 to 159.63.163.1/443 terminated%0A
+
+<167>Nov 07 2022 23:46:00: %25ASA-7-722051: Group <GroupPolicy_RemoteAccess_AlwaysOn> User <ryan.holcomb> IP <73.255.18.65> IPv4 Address <10.2.72.91> IPv6 address <::> assigned to session%0A
+
+<167>Nov 07 2022 23:47:23: %25ASA-7-713906: Group = 129.146.12.53, IP = 129.146.12.53, IKE SA MM:d1263649 rcv'd Terminate: state MM_STANDBY  flags 0x00010042, refcnt 1, tuncnt 0%0A
+
+<164>Nov 07 2022 23:49:23: %25ASA-4-113019: Group = Arvada_SSLVPN_RemoteAccess, Username = Scott.Flores, IP = 76.25.75.96, Session disconnected. Session Type: AnyConnect-Parent, Duration: 3h:42m:27s, Bytes xmt: 4860686, Bytes rcv: 10899089, Reason: Idle Timeout%0A

@@ -1,0 +1,134 @@
+22 Nov 2023
+
+@ 07 :14pm
+
+Sundyne Legacy-ise parser
+
+filter {
+
+ mutate {
+    add_field => { "[event][module]" => "cisco" }
+    add_field => { "[event][dataset]" => "cisco.ise" }
+  }
+
+  mutate {
+    add_field => {"[log][original]" => "%{[message]}"}
+  }
+
+
+
+  if "CISE_Identity_Stores_Diagnostics" in [message] {
+  grok {
+    match => {
+      "message" => [
+            "<%{POSINT:pri}>%{SYSLOGTIMESTAMP:syslog_date} %{DATA:server} %{NOTSPACE:log_category} %{DATA:msg_id} %{DATA:total_seg} %{DATA:seg_num} %{TIMESTAMP_ISO8601} %{ISO8601_TIMEZONE:tz} %{DATA:seq_num} %{DATA:msg_code} %{DATA:log_type} %{DATA:msg_type}: %{DATA:msg_description}, %{GREEDYDATA:kvfields1}"
+
+       ]
+      }
+    }
+  }
+if "CISE_RADIUS_Accounting" in [message] {
+  grok {
+    match => {
+      "message" => [
+            "<%{POSINT:pri}>%{SYSLOGTIMESTAMP:syslog_date} %{DATA:server} %{NOTSPACE:log_category} %{DATA:msg_id} %{DATA:total_seg} %{DATA:seg_num} %{TIMESTAMP_ISO8601} %{ISO8601_TIMEZONE:tz} %{DATA:seq_num} %{DATA:msg_code} %{DATA:log_type} %{DATA:msg_type}: %{DATA:msg_description}, %{GREEDYDATA:kvfields1}",
+            "<%{POSINT:pri}>%{SYSLOGTIMESTAMP:syslog_date} %{DATA:server} %{NOTSPACE:log_category} %{DATA:msg_id} %{DATA:total_seg} %{DATA:seg_num} %{GREEDYDATA:kvfields1}"
+
+       ]
+      }
+    }
+  }
+
+if "CISE_Passed_Authentications" in [message] or "CISE_Failed_Attempts" in [message] or "CISE_RADIUS_Diagnostics" in [message] or "CISE_TACACS_Accounting" in [message] or "CISE_AD_Connector" in [message] or "CISE_System_Statistics" in [message] or "CISE_MyDevices" in [message] or "CISE_Licensing" in [message] or "CISE_MONITORING_DATA_PURGE_AUDIT" in [message] {
+  grok {
+    match => {
+      "message" => [
+            "<%{POSINT:pri}>%{SYSLOGTIMESTAMP:syslog_date} %{DATA:server} %{NOTSPACE:log_category} %{DATA:msg_id} %{DATA:total_seg} %{DATA:seg_num} %{TIMESTAMP_ISO8601} %{ISO8601_TIMEZONE:tz} %{DATA:seq_num} %{DATA:msg_code} %{DATA:log_type} %{DATA:msg_type}: %{DATA:msg_description}, %{GREEDYDATA:kvfields1}",
+            "<%{POSINT:pri}>%{SYSLOGTIMESTAMP:syslog_date} %{DATA:server} %{NOTSPACE:log_category} %{DATA:msg_id} %{DATA:total_seg} %{DATA:seg_num} %{GREEDYDATA:kvfields1}"
+
+       ]
+      }
+    }
+  }
+
+if "CISE_Administrative_and_Operational_Audit" in [message] {
+  grok {
+    match => {
+      "message" => [
+            "<%{POSINT:pri}>%{SYSLOGTIMESTAMP:syslog_date} %{DATA:server} %{NOTSPACE:log_category} %{DATA:msg_id} %{DATA:total_seg} %{DATA:seg_num} %{TIMESTAMP_ISO8601} %{ISO8601_TIMEZONE:tz} %{DATA:seq_num} %{DATA:msg_code} %{DATA:log_type} %{DATA:msg_type}: %{DATA:msg_description}, %{GREEDYDATA:kvfields1}",
+            "<%{POSINT:pri}>%{SYSLOGTIMESTAMP:syslog_date} %{DATA:server} %{NOTSPACE:log_category} %{DATA:msg_id} %{DATA:total_seg} %{DATA:seg_num} %{GREEDYDATA:kvfields1}"
+
+       ]
+      }
+    }
+  }
+
+
+
+
+  # 2. Correct timestamps are crucial to ISE logs, so we'll make sure to convert and update them
+  mutate {
+    copy => { "@timestamp" => "[event][ingested]"}
+  }
+
+
+  date {
+    match => ["syslog_date",  "MMM dd HH:mm:ss", "MMM  dd HH:mm:ss"   ]
+    #by not updating timestamp directly we avoid issues if there are problems with this field
+    target => "event_timestamp"
+    id => "datetime_syslog_date"
+  }
+
+#  mutate {
+#    copy => { "[tmp][syslog_date]" => "[@timestamp]"}
+#  }
+
+if "OperationCounters" in [kvfields1] {
+
+  mutate {
+   gsub => [ "kvfields1", "\\,", ", " ]
+   gsub => [ "kvfields1", ":", "=" ]
+ }
+}
+
+  if [kvfields1] {
+    kv {
+      source => "kvfields1"
+      field_split => "="
+      field_split_pattern => ", "
+      remove_char_key => "\s"
+    }
+  }
+
+
+mutate {
+   gsub => [ "Response", "[\{\}]", "" ]
+}
+if [Response] {
+   kv {
+      source => "Response"
+      field_split => "="
+      field_split_pattern => "; "
+     # target => "[kvs]"
+      remove_char_key => "\s"
+      # whitespace => "strict" #check later
+    }
+
+}
+
+
+   mutate {
+    rename => { "[UserName]" => "[user][name]"}
+    rename => { "[server]" => "[event][hostname]"}
+#    rename => { "[NAS IP Address]" => "[source][ip]"}
+#    rename => { "[NAS Identifier]" => "[event][outcome]"}
+  }
+
+  mutate {
+    remove_field => [ "[tmp]", "message", "Response", "actual_msg", "proc_tmp", "kvfields", "kvfields1" ]
+  }
+
+
+
+
+}

@@ -1,0 +1,9 @@
+<189>206616: Oct 31 23:50:33 UTC: %25SFF8472-5-THRESHOLD_VIOLATION: Gi4/0/6: Rx power low warning; Operating value: -18.0 dBm, Threshold value: -17.0 dBm.
+
+<189>206617: Oct 31 23:50:32 UTC: %25SFF8472-5-THRESHOLD_VIOLATION: Gi4/0/6: Rx power low warning; Operating value: -18.0 dBm, Threshold value: -17.0 dBm. (LONFRRTR1MDF1-4)
+
+<190>208821: Nov  7 14:08:11 UTC: %25TRACK-6-STATE: 13 ip sla 13 reachability Down -> Up
+
+<190>208820: Nov  7 14:07:15 UTC: %25TRACK-6-STATE: 13 ip sla 13 reachability Up -> Down
+
+<189>208694: Nov  7 03:57:12 UTC: %25SEC_LOGIN-5-LOGIN_SUCCESS: Login Success [user: a-Pavithran.C] [Source: 10.2.55.15] [localport: 22] at 03:57:12 UTC Mon Nov 7 2022

@@ -1,0 +1,183 @@
+sundyne---22-Nov-2023
+@06:30pm
+
+legacy-crowdstrike parser
+
+
+
+filter {
+mutate {
+          add_field => { "[ecs][version]" => "8.7.0" }
+          add_field => { "[observer][type]" => "epp" }
+}
+mutate {
+          rename => { "message" => "[event][original]" }
+          remove_field => ["[host]"]
+}
+json {
+    source => "[event][original]"
+    target => "crowdstrike"
+  }
+if [crowdstrike][event][ProcessStartTime] == 0 {
+    mutate {
+      remove_field => ["[crowdstrike][event][ProcessStartTime]"]
+    }
+  }
+if [crowdstrike][event][ProcessStartTime] {
+    date {
+      match => ["[crowdstrike][event][ProcessStartTime]", "UNIX_MS"]
+      target => "[crowdstrike][event][ProcessStartTime]"
+      timezone => "UTC"
+      tag_on_failure => "date_processstarttime_failure"
+    }
+  }
+if [crowdstrike][event][ProcessEndTime] == 0 {
+    mutate {
+      remove_field => ["[crowdstrike][event][ProcessEndTime]"]
+    }
+}
+if [crowdstrike][event][ProcessEndTime] {
+    date {
+      match => ["[crowdstrike][event][ProcessEndTime]", "UNIX_MS"]
+      target=> "[crowdstrike][event][ProcessEndTime]"
+      timezone => "UTC"
+      tag_on_failure => "date_processendtime_failure"
+    }
+  }
+if [crowdstrike][event][IncidentStartTime] == 0 {
+    mutate {
+      remove_field => ["[crowdstrike][event][IncidentStartTime]"]
+    }
+  }
+ if [crowdstrike][event][IncidentStartTime] {
+    date {
+      match => ["[crowdstrike][event][IncidentStartTime]", "UNIX_MS"]
+      target => "[crowdstrike][event][IncidentStartTime]"
+      timezone => "UTC"
+      tag_on_failure => "date_incidentstarttime_failure"
+    }
+  }
+if [crowdstrike][event][IncidentEndTime] == 0 {
+    mutate {
+      remove_field => ["[crowdstrike][event][IncidentEndTime]"]
+    }
+  }
+if [crowdstrike][event][IncidentEndTime] {
+    date {
+      match => ["[crowdstrike][event][IncidentEndTime]", "UNIX_MS"]
+      target => "[crowdstrike][event][IncidentEndTime]"
+      timezone => "UTC"
+      tag_on_failure => "date_incidentendtime_failure"
+    }
+  }
+if [crowdstrike][event][StartTimestamp] == 0 {
+    mutate {
+      remove_field => ["[crowdstrike][event][StartTimestamp]"]
+    }
+  }
+if [crowdstrike][event][StartTimestamp] {
+    date {
+      match => ["[crowdstrike][event][StartTimestamp]", "UNIX_MS"]
+      target => "[crowdstrike][event][StartTimestamp]"
+      timezone => "UTC"
+      tag_on_failure => "date_starttimestamp_failure"
+    }
+  }
+if [crowdstrike][event][EndTimestamp] == 0 {
+    mutate {
+      remove_field => ["[crowdstrike][event][EndTimestamp]"]
+    }
+  }
+if [crowdstrike][event][EndTimestamp] {
+    date {
+      match => ["[crowdstrike][event][EndTimestamp]", "UNIX_MS"]
+      target => "[crowdstrike][event][EndTimestamp]"
+      timezone => "UTC"
+      tag_on_failure => "date_endtimestamp_failure"
+    }
+  }
+if [crowdstrike][event][UTCTimestamp] == 0 {
+    mutate {
+      remove_field => ["[crowdstrike][event][UTCTimestamp]"]
+    }
+  }
+if [crowdstrike][event][UTCTimestamp] { 
+date {
+  match => [ "[crowdstrike][event][UTCTimestamp]", "UNIX_MS" ]
+  target => "[crowdstrike][event][UTCTimestamp]"
+  timezone => "UTC"
+  tag_on_failure => "date_utctimestamp_failure"
+}
+         }
+if [crowdstrike][metadata][eventCreationTime] == 0 {
+    mutate {
+      remove_field => ["[crowdstrike][metadata][eventCreationTime]"]
+    }
+  }
+if [crowdstrike][metadata][eventCreationTime] {
+date {
+  match => [ "[crowdstrike][metadata][eventCreationTime]", "UNIX_MS" ]
+  target => "[crowdstrike][metadata][eventCreationTime]"
+  timezone => "UTC"
+  tag_on_failure => "date_eventcreationtime_failure"
+}
+}
+if [crowdstrike][event][Success] == 'true' {
+        mutate {
+        add_field => { "[event][outcome]" => "success"}
+        }
+}
+if [crowdstrike][event][Success] == 'false' {
+        mutate {
+        add_field => { "[event][outcome]" => "failure"}
+        }
+}
+if ![event][outcome] {
+        mutate {
+        add_field => { "[event][outcome]" => "unknown"}
+        }
+}
+mutate {
+          rename => { "[crowdstrike][metadata][eventCreationTime]" => "@timestamp" }
+          rename => { "[crowdstrike][event][LateralMovement]" => "float" }
+          rename => { "[crowdstrike][event][LocalPort]" => "float" }
+          rename => { "[crowdstrike][event][MatchCount]" => "float" }
+          rename => { "[crowdstrike][event][MatchCountSinceLastReport]" => "float" }
+          rename => { "[crowdstrike][event][PID]" => "float" }
+          rename => { "[crowdstrike][event][RemotePort]" => "float" }
+          rename => { "[source][port]" => "float" }
+          rename => { "[destination][port]" => "float" }
+          rename => { "[crowdstrike][event][UserName]" => "[user][name]" }
+}
+if ![user][name] or [user][name] == "" {
+        mutate {
+        rename => { "[crowdstrike][event][UserId]" => "[user][name]"}
+        }
+}
+if [user][name] {
+        mutate {
+        add_field => { "[user][email]" => "%{[user][name]}"}
+        }
+}
+
+if [user][name] and [user][name] != "" {
+        mutate {
+        add_field => { "[related][user]" => "%{[user][name]}"}
+        }
+}
+if [source][ip] and [source][ip] != "" {
+        mutate {
+        add_field => { "[related][ip]" => "%{[source][ip]}"}
+        }
+}
+if [destination][ip] and [destination][ip] != "" {
+        mutate {
+        add_field => { "[related][ip]" => "%{[destination][ip]}"}
+        }
+}
+if [host][name] and [host][name] != "" {
+        mutate {
+        add_field => { "[related][hosts]" => "%{[host][name]}"}
+        }
+}
+}

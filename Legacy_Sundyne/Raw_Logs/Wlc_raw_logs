@@ -1,0 +1,17 @@
+<131>LONFRWLC1MDF1: *sntpReceiveTask: Nov 04 00:51:57.267: %25SNTP-3-FATAL_ERROR_OCCURED: [PA]sntp_main.c:233 Fatal error: : not enough valid responses received in time.
+
+<131>LONFRWLC1MDF1: *spamApTask6: Nov 03 15:15:41.327: %25LWAPP-3-REPLAY_ERR: [PA]spam_lrad.c:45310 The system has received replay error on slot 1, WLAN ID 3, count 3 from AP 34:62:88:f3:f3:30
+
+<131>LONFRWLC1MDF1: *Dot1x_NW_MsgTask_7: Nov 03 15:15:43.366: %25DOT1X-3-ABORT_AUTH: [PA]1x_bauth_sm.c:487  Authentication Aborted for  client 88:29:9c:65:d6:27 Abort Reason:DOT1X RESTARTED DUE TO EAPOL-START/CLIENT ROAM
+
+<131>LONFRWLC1MDF1: *spamApTask2: Nov 03 10:05:06.496: %25LWAPP-3-REPLAY_ERR: [PA]spam_lrad.c:45310 The system has received replay error on slot 0, WLAN ID 3, count 1 from AP 34:6f:90:34:54:30
+
+<131>LONFRWLC1MDF1: *apfMsConnTask_4: Nov 03 15:00:07.872: %25RRM-3-RRM_LOGMSG: [PA]rrmLrad.c:5468 RRM LOG: Failed to lookup data rate for encoding 1035, with channel width 40 on AP:  F0:9E:63:48:89:60 (1)
+
+131>LONFRWLC1MDF1: *webauthRedirect: Nov 03 07:53:19.064: %25LOG-3-Q_IND: [PA]1x_eapkey.c:452 Invalid replay counter from client 0a:85:cf:97:d3:91 - got 00 00 00 00 00 00 00 00, expected 00 00 00 00 00 00 00 01[...It occurred 4 times.!]%0A
+
+<131>ARVUSWLC3IDF1: *nim_t: Nov 01 15:40:57.039: %25SIM-3-PORT_DOWN: sim.c:13911 Physical port 5 is down!.
+
+<131>ARVUSWLC3IDF1: *envFanMonitorStatus: Nov 02 01:48:09.545: %25ENVMON-3-CPLDFAIL: kukri_fan.c:121 CPLD failure.
+
+

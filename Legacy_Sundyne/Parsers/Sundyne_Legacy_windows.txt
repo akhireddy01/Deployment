@@ -1,0 +1,66 @@
+22 ' Nov 2023
+
+@06:44pm 
+
+Sundyne
+
+Legacy windows parser
+
+
+filter { 
+
+  grok { 
+
+    match => { 
+
+        "message" =>["%{IP:source_ip}\|\|%{WORD:log_type}\|\|%{NUMBER:record_id}\|\|%{HOSTNAME:log_source}\|\|%{NUMBER:event_id}\|\|%{NUMBER:log_result}\|\|%{NUMBER:epoch_timestamp}\|\|%{NUMBER:log_duration}\|\|%{HOSTNAME:event_hostname}\|\|\|\|%{DATA}\|\|%{DATA:session_id}\|\|%{DATA}\|\|-\|\|-\|\|%{DATA}\|\|%{DATA:SD}\|\|(?<username>[^\|]+)\|\|%{GREEDYDATA:message}", 
+
+                      "%{IP:source_ip}\|\|%{WORD:log_type}\|\|%{NUMBER:record_id}\|\|%{HOSTNAME:log_source}\|\|%{NUMBER:event_id}\|\|%{NUMBER:log_result}\|\|%{NUMBER:epoch_timestamp}\|\|%{NUMBER:log_duration}\|\|%{HOSTNAME:event_hostname}\|\|\|\|%{DATA}\|\|%{DATA:session_id}\|\|%{DATA:SD}\|\|(?<username>[^\|]+)\|\|%{GREEDYDATA:message}", 
+
+                     "%{IP:source_ip}\|\|%{WORD:log_type}\|\|%{NUMBER:record_id}\|\|%{HOSTNAME:log_source}\|\|%{NUMBER:event_id}\|\|%{NUMBER:log_result}\|\|%{NUMBER:epoch_timestamp}\|\|%{NUMBER:log_duration}\|\|%{HOSTNAME:event_hostname}\|\|\|\|%{DATA}\|\|%{DATA:session_id}\|\|%{DATA:SD}\|\|%{GREEDYDATA:message}" 
+
+        ] 
+
+} 
+
+} 
+
+  
+
+  date { 
+
+    match => ["epoch_timestamp", "UNIX"] 
+
+    target => ["event_timestamp"] 
+
+  } 
+
+  
+
+  mutate { 
+
+    id => "add-clientid-fields" 
+
+    add_field => { "[client_id]" => "defc0264" } 
+
+  } 
+
+  
+
+  mutate { 
+
+    id => "add-sensorid-fields" 
+
+    add_field => { "[sensor_id]" => "SD_AZ_S01" } 
+
+  } 
+
+  
+
+  mutate { 
+
+    add_field => { "[log][type]" => "windows" } 
+
+  } 
+
+} 

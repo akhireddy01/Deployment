@@ -1,0 +1,33 @@
+23 Nov 23---Thursday 
+@12:50 pm
+Sundyne --legacy mimecast parser
+
+
+filter {
+
+grok{
+          match => { "message" =>  "%{DATA:date},%{DATA:riskBasedPriority},%{DATA:logSourceEntity},%{DATA:logSourceHost},%{DATA:logSourceType},%{DATA:logSource},%{DATA:classification},%{DATA:commonEvent},%{DATA:MPE-RuleName},%{DATA:direction},%{DATA:zone-origin},%{DATA:zone-impacted},%{DATA:entity-origin},%{DATA:entity-impacted},%{DATA:location-impacted},%{DATA:network-origin},%{DATA:network-impacted},%{DATA:host-impacted},%{DATA:vendorMessageID},%{DATA:sender0},%{DATA:recipient},%{DATA:subject},%{DATA:object},%{DATA:action},%{GREEDYDATA:msg}" }
+    }
+
+kv {
+      field_split => "|"
+      value_split => "="
+      source => "msg"
+      trim_key => "\n"
+    }
+
+
+mutate {
+      add_field => { "rawmessage" => "%{message}"}
+   }
+
+mutate {
+ remove_field => ["host","agent","os","mac","cloud","msg","message", "[log][file]","input", "region"]
+}
+
+        date {
+               match => ["datetime","ISO8601"]
+               target => "event_timestamp"
+          }
+
+}
