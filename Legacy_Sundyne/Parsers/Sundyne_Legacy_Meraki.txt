@@ -1,0 +1,109 @@
+sundyne---22 Nov-2023
+@06:40pm
+
+Legacy-cisco-meraki-parser
+
+
+filter {
+
+
+if "urls" in [message] {
+
+  grok {
+      match => ["message", "<%{POSINT:syslog_pri}>%{NUMBER:version} %{BASE10NUM:epoch_time} %{WORD:device} %{WORD:log_event_type} %{GREEDYDATA:kvfields} request: %{GREEDYDATA:request}"]
+     match => ["message", "<%{POSINT:syslog_pri}>%{NUMBER:version} %{BASE10NUM:epoch_time} %{WORD:device} %{WORD:log_event_type} %{GREEDYDATA:kvfields}"]
+  }
+
+}
+
+if "ip_flow_start" in [message] or "ip_flow_end" in [message] or "l7_firewall" in [message] or "airmarshal_events" in [message] {
+  grok {
+      match => ["message", "<%{POSINT:syslog_pri}>%{NUMBER:version} %{BASE10NUM:epoch_time} %{WORD:device} %{WORD:log_event_type} %{GREEDYDATA:kvfields}"]
+  }
+}
+
+if "security_event" in [message] {
+
+  grok {
+      match => ["message", "<%{POSINT:syslog_pri}>%{NUMBER:version} %{BASE10NUM:epoch_time} %{WORD:device} %{WORD:log_event_type} %{DATA:pattern} %{GREEDYDATA:kvfields} message: %{GREEDYDATA:action_msg}"]
+     match => ["message", "<%{POSINT:syslog_pri}>%{NUMBER:version} %{BASE10NUM:epoch_time} %{WORD:device} %{WORD:log_event_type} %{GREEDYDATA:kvfields}"]
+  }
+
+}
+
+if "flows" in [message] or "vpn_firewall" in [message] {
+  grok {
+      match => ["message", "<%{POSINT:syslog_pri}>%{NUMBER:version} %{BASE10NUM:epoch_time} %{WORD:device} %{WORD:log_event_type} %{GREEDYDATA:kvfields} pattern: %{GREEDYDATA:pattern}"]
+      match => ["message", "<%{POSINT:syslog_pri}>%{NUMBER:version} %{BASE10NUM:epoch_time} %{WORD:device} %{WORD:log_event_type} %{GREEDYDATA:kvfields}"]
+  }
+}
+
+if "events" in [message] and "urls" not in [message]{
+
+  grok {
+      match => ["message", "<%{POSINT:syslog_pri}>%{NUMBER:version} %{BASE10NUM:epoch_time} %{WORD:device} %{DATA:log_event_type} %{DATA:event_type} on %{DATA:msg} as %{GREEDYDATA:kvfields1}"]
+      match => ["message", "<%{POSINT:syslog_pri}>%{NUMBER:version} %{BASE10NUM:epoch_time} %{WORD:device} %{DATA:log_event_type} %{DATA:event_type}: %{GREEDYDATA:msg}"]
+      match => ["message", "<%{POSINT:syslog_pri}>%{NUMBER:version} %{BASE10NUM:epoch_time} %{WORD:device} %{DATA:log_event_type} %{DATA:event_type} %{GREEDYDATA:kvfields}"]
+#      match => ["message", "<%{POSINT:syslog_pri}>%{NUMBER:version} %{BASE10NUM:epoch_time} %{WORD:device} %{DATA:log_event_type} %{DATA:event_type}: %{GREEDYDATA:msg}"]
+  }
+}
+
+
+
+
+kv {
+       source => "kvfields"
+       field_split => " "
+       value_split => "="
+ }
+
+kv {
+       source => "kvfields1"
+       field_split => ","
+       value_split => "="
+ }
+
+kv {
+       source => "user"
+       field_split => ","
+       value_split => "="
+ }
+
+
+        if ":" in [src] {
+          grok {
+              match => ["src", "%{DATA:[source][ip]}:%{GREEDYDATA:[source][port]}"]
+          }
+         mutate {
+             remove_field => ["src"]
+          }
+        mutate {
+            rename => {"[source][ip]" => "src" }
+         }
+        }
+        if ":" in [dst] {
+          grok {
+              match => ["dst", "%{DATA:[destination][ip]}:%{GREEDYDATA:[destination][port]}"]
+          }
+          mutate {
+             remove_field => ["dst"]
+          }
+        mutate {
+            rename => {"[destination][ip]" => "dst" }
+         }
+
+        }
+
+
+    date {
+        match => [ "epoch_time", "UNIX", "UNIX_MS" ]
+        target => "event_timestamp"
+      }
+
+  mutate{
+      remove_field => ["kvfields", "kvfields1", "eventtimestamp", "user"]
+      rename => {"message" => "rawmessage"}
+  }
+
+
+}

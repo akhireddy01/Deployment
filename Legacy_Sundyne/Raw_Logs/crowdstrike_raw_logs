@@ -1,0 +1,3 @@
+{"event": {"AuditKeyValues": [{"Key": "partition", "ValueString": "0"}, {"Key": "offset", "ValueString": "500353"}, {"Key": "appId", "ValueString": "mfe_cs268"}, {"Key": "eventType", "ValueString": "All event type(s)"}, {"Key": "APIClientID", "ValueString": "7debd0f035dc457bb14f17deb0369b70"}], "OperationName": "streamStopped", "ServiceName": "Crowdstrike Streaming API", "Success": true, "UTCTimestamp": 1667864627, "UserId": "api-client-id:7debd0f035dc457bb14f17deb0369b70", "UserIp": "4.34.50.18"}, "metadata": {"customerIDString": "bacebe36642d4d228eeb2abc6668f610", "eventCreationTime": 1667864627161, "eventType": "AuthActivityAuditEvent", "offset": 500355, "version": "1.0"}}
+
+

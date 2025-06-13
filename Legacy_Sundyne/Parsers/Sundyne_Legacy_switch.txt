@@ -1,0 +1,28 @@
+22 Nov 2023
+@06:48pm
+
+Legacy-sundyne switch / coreswitch / router parser
+
+filter {
+
+
+grok{
+          match => { "message" =>  "<%{POSINT:syslog_pri}>(%{NUMBER:log_sequence})?:( %{NUMBER}:)? \.%{CISCOTIMESTAMP:timestamp} %{DATA:tz}: %%{CISCO_REASON:facility}-%{INT:severity_level}-%{CISCO_REASON:facility_mnemonic}: %{GREEDYDATA:msg}"}
+          match => { "message" =>  "<%{POSINT:syslog_pri}>(%{NUMBER:log_sequence})?:( %{NUMBER}:)?( %{NUMBER}:)? %{CISCOTIMESTAMP:timestamp} %{DATA:tz}: %%{CISCO_REASON:facility}-%{INT:severity_level}-%{CISCO_REASON:facility_mnemonic}: %{GREEDYDATA:msg}"}
+          match => { "message" =>  "<%{POSINT:syslog_pri}>(%{NUMBER:log_sequence})?:( %{NUMBER}:)? %{CISCOTIMESTAMP:timestamp}: %%{CISCO_REASON:facility}-%{CISCO_REASON:facility_sub}-%{INT:severity_level}-%{CISCO_REASON:facility_mnemonic}: %{GREEDYDATA:msg}"}
+          match => { "message" =>  "<%{POSINT:syslog_pri}>(%{NUMBER:log_sequence})?: \.%{CISCOTIMESTAMP:timestamp}: %%{CISCO_REASON:facility}-%{INT:severity_level}-%{CISCO_REASON:facility_mnemonic}: %{GREEDYDATA:msg}"}
+           match => { "message" =>  "<%{POSINT:syslog_pri}>(%{NUMBER:log_sequence})?:( %{NUMBER}:)? \*%{CISCOTIMESTAMP:timestamp} %{DATA:tz}: %%{CISCO_REASON:facility}-%{INT:severity_level}-%{CISCO_REASON:facility_mnemonic}: %{GREEDYDATA:msg}"}
+ }
+
+  mutate {
+      rename => { "message" => "rawmessage"}
+#      rename => { "timestamp" => "event_timestamp" }
+     }
+
+date {
+        match => [ "timestamp", "MMM dd yyyy HH:mm:ss", "MMM dd HH:mm:ss", "MMM  d HH:mm:ss" ]
+        timezone => "%{tz}"
+        target => "event_timestamp"
+      }
+
+}

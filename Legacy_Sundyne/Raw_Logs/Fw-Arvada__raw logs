@@ -1,0 +1,13 @@
+<165>Oct 31 2022 23:58:53: %25ASA-5-713257: Phase 1 failure:  Mismatched attribute types for class Group Description:  Rcv'd: Unknown  Cfg'd: Group 5%0A
+
+<167>Oct 31 2022 23:58:53: %25ASA-7-713236: IP = 129.146.197.109, IKE_DECODE RECEIVED Message (msgid=0) with payloads : HDR + SA (1) + VENDOR (13) + VENDOR (13) + VENDOR (13) + VENDOR (13) + VENDOR (13) + NONE (0) total length : 1768%0A
+
+<167>Oct 31 2022 23:58:53: %25ASA-7-713906: IKE Receiver: Packet received on 159.63.163.1:500 from 129.146.197.109:500%0A
+
+<166>Oct 31 2022 23:58:40: %25ASA-6-725007: SSL session with client outside:150.31.249.115/61053 to 159.63.163.1/443 terminated%0A
+
+<166>Oct 31 2022 23:58:40: %25ASA-6-725002: Device completed SSL handshake with client outside:150.31.249.115/61053 to 159.63.163.1/443 for TLSv1.2 session%0A
+
+<167>Oct 31 2022 23:58:40: %25ASA-7-725017: No certificates received during the handshake with client outside:150.31.249.115/61053 to 159.63.163.1/443 for DTLSv1 session%0A
+
+<167>Oct 31 2022 23:58:53: %25ASA-7-715047: IP = 129.146.197.109, processing SA payload%0A
